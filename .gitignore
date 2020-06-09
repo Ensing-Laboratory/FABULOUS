@@ -1,0 +1,6 @@
+/data/AD/TPS/trjs
+/data/AD/CV/CV_data
+/results/run*
+/analysis/.*
+/.idea
+*.pyc
