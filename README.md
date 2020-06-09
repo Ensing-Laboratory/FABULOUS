@@ -5,7 +5,7 @@ Ferry, Alberto, and Bernd's Ultimate Learning Of Useful Slow-coordinates
 ### Dependencies
 Use conda to install dependencies.
 ```bash
-conda env create -f FABULOUS.yml"
+conda env create -f FABULOUS.yml
 ```
 
 ### Usage
