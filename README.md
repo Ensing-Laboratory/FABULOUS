@@ -2,13 +2,13 @@
 Ferry, Alberto, and Bernd's Ultimate Learning Of Useful Slow-coordinates
 
 
-###Dependencies
+### Dependencies
 Use conda to install dependencies.
 ```bash
-conda env create -f FABULOUS.yml"
+conda env create -f FABULOUS.yml
 ```
 
-###Usage
+### Usage
 To use as is, unpack the following archives:
 ```bash
 ./data/AD/CV/CV_data.zip
@@ -16,7 +16,7 @@ To use as is, unpack the following archives:
 ```
 and run main.py.  
 
-###Analysis
+### Analysis
 An example of analysis using jupyter notebook can be found in:
 ```bash
 ./analysis/
