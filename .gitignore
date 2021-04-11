@@ -1,6 +1,10 @@
-/data/AD/TPS/trjs
-/data/AD/CV/CV_data
-/results/run*
+/examples/alanine_dipeptide/data/AD/TPS/trjs
+/examples/alanine_dipeptide/data/AD/CV/CV_data
+/examples/alanine_dipeptide/results
 /analysis/.*
 /.idea
 *.pyc
+/examples/alanine_dipeptide/.ipynb_checkpoints/
+/dist/
+/build/
+/FABULOUS.egg-info/
