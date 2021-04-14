@@ -1,0 +1,37 @@
+keep_atoms: backbone
+
+network_config:
+  n_layers: [2, 3, 4, 5]
+  batch_size: [5000]
+  optimizer: [adam]
+  epochs: [500]
+
+layer_config:
+  layer_type:
+    - dense
+    - dropout
+    - batch_norm
+    - batch_norm_dropout
+  n_nodes: [4, 8, 16, 32]
+  activation:
+    - relu
+    - selu
+    - tanh
+    - elu
+    - sigmoid
+    - linear
+    - exponential
+  dropout: [0.1, 0.2]
+
+optimizer:
+  pop_size: 50
+  train_verbose: 0
+  reject_select_chance: 0.05
+  retain: 0.02
+  early_stopping: true
+  mutation_rate: 0.1
+  penalty: 0.15
+  parent_frac: 0.1
+  cache: true
+  train_chance: 0.5
+  val_split: 0.3
