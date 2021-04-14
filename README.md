@@ -1,23 +1,19 @@
 # FABULOUS
 Ferry, Alberto, and Bernd's Ultimate Learning Of Useful Slow-coordinates
 
+This package provides a tool to find collective variables from a pool of candidates given trajectories containing the transition of interest. 
 
-### Dependencies
-Use conda to install dependencies.
+
+### Example
+To run the example as is, unpack the following archives before running main.py:
 ```bash
-conda env create -f FABULOUS.yml
+.examples/alanine_dipeptide/data/AD/CV/CV_data.zip
+.examples/alanine_dipeptide/data/AD/TPS/trjs.zip
 ```
 
-### Usage
-To use as is, unpack the following archives:
-```bash
-./data/AD/CV/CV_data.zip
-./data/AD/TPS/trjs.zip
-```
-and run main.py.  
 
-### Analysis
-An example of analysis using jupyter notebook can be found in:
+
+A method of analysing the results is given in:
 ```bash
-./analysis/
+.examples/alanine_dipeptide/analysis/
 ```

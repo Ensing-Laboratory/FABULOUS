@@ -1,36 +1,36 @@
 from __future__ import print_function
-
-import pandas as pd
-import mdtraj as md
-from glob import glob
-from keras_utilities import read_MD, read_CV
-from sklearn.model_selection import train_test_split
-from keras.backend.tensorflow_backend import set_session
-from model import build_model
-from genetic_optimizer import Optimizer
 import random
 import os
-
+import pandas as pd
+import mdtraj as md
 import tensorflow as tf
+from glob import glob
+from sklearn.model_selection import train_test_split
+from fabulous import read_MD, read_CV
+from fabulous import build_model
+from fabulous import Optimizer
+
+# to force run on CPU:
+# os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
 # If using GPU, use dynamic memory allocation
-gpus = tf.config.experimental.list_physical_devices('GPU')
+gpus = tf.config.list_physical_devices('GPU')
 if gpus:
-    config = tf.compat.v1.ConfigProto()
-    config.gpu_options.allow_growth = True
-    config.log_device_placement = True
-    sess = tf.Session(config=config)
-    set_session(sess)
-
-# to run on CPU:
-# os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"   # see issue #152
-# os.environ["CUDA_VISIBLE_DEVICES"] = ""
+    try:
+        # Currently, memory growth needs to be the same across GPUs
+        for gpu in gpus:
+            tf.config.experimental.set_memory_growth(gpu, True)
+        logical_gpus = tf.config.experimental.list_logical_devices('GPU')
+        print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPUs")
+    except RuntimeError as e:
+        # Memory growth must be set before GPUs have been initialized
+        print(e)
 
 random.seed(10)
 
 # loading the CV-data
 print("Loading CV data...")
-fns = glob("data/AD/CV/CV_data/*")
+fns = glob("./data/AD/CV/CV_data/*")
 cv_data = [read_CV(fn) for fn in fns]
 cv_data = pd.concat(cv_data, ignore_index=True)
 cv_data = cv_data.drop(['time'], axis=1)
@@ -45,8 +45,8 @@ print(cv_test)
 
 # loading the TPS-data
 print("Loading TPS data...")
-fns = glob("data/AD/TPS/trjs/*")
-ref = md.load("data/AD/c7ax_input.pdb")
+fns = glob("./data/AD/TPS/trjs/*")
+ref = md.load("./data/AD/c7ax_input.pdb")
 backbone = [atom.index for atom in ref.top.atoms if atom.is_backbone]
 md_data = []
 for i, fn in enumerate(fns):
@@ -55,6 +55,7 @@ for i, fn in enumerate(fns):
         print(i)
 md_data = pd.concat(md_data, ignore_index=True)
 print(md_data.describe())
+print(md_data.head())
 
 md_train = md_data.reindex(cv_train.index)
 md_test = md_data.reindex(cv_test.index)

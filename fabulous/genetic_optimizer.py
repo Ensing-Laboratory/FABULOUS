@@ -8,14 +8,12 @@ import pickle
 import itertools
 from datetime import datetime
 from copy import deepcopy
-import maps
-import hashlib
+from dict_hash import sha256
 
-from keras_utilities import *
+from fabulous.keras_utilities import *
 
-from keras.callbacks import TensorBoard, CSVLogger, EarlyStopping, ModelCheckpoint
-from keras.backend import clear_session
-
+from tensorflow.keras.callbacks import TensorBoard, CSVLogger, EarlyStopping, ModelCheckpoint
+from tensorflow.keras.backend import clear_session
 
 class Optimizer:
     """
@@ -280,13 +278,6 @@ class Optimizer:
 
         return model
 
-    def hash_network(self, d):
-        # sort the inputs only, the rest of the parameters are immutable
-        d = deepcopy(d)
-        d['io_config']['inputs'].sort()
-        f_dict = maps.FrozenMap.recurse(d)
-        return hashlib.md5(repr(f_dict).encode()).hexdigest()
-
     def train_and_score(self, network, network_id=None):
         """
         Compiles the network and trains it on the training data with the enabled callbacks.
@@ -313,7 +304,7 @@ class Optimizer:
             os.makedirs(model_save_path)
 
         if self.cache:
-            network_hash = self.hash_network(network)
+            network_hash = sha256(network)
             if network_hash in self.trained_networks.keys():
                 if random.uniform(0, 1) > self.train_chance:  # skip training based on train_chance
                     # grab score from cache
