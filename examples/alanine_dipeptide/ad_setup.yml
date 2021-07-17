@@ -1,8 +1,8 @@
 keep_atoms: backbone
 
 network_config:
-  n_layers: [4]
-  batch_size: [8000]
+  n_layers: [2, 3, 4, 5]
+  batch_size: [5000]
   optimizer: [adam]
   epochs: [500]
 
@@ -11,12 +11,17 @@ layer_config:
     - dense
     - dropout
     - batch_norm
-  n_nodes: [8, 16, 64]
+    - batch_norm_dropout
+  n_nodes: [4, 8, 16, 32]
   activation:
-    - selu
-    - linear
     - relu
-  dropout: [0.2]
+    - selu
+    - tanh
+    - elu
+    - sigmoid
+    - linear
+    - exponential
+  dropout: [0.1, 0.2]
 
 optimizer:
   pop_size: 50
@@ -28,5 +33,5 @@ optimizer:
   penalty: 0.15
   parent_frac: 0.1
   cache: true
-  train_chance: 0.1
+  train_chance: 0.5
   val_split: 0.3
