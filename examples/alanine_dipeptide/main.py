@@ -14,6 +14,7 @@ from fabulous import Optimizer
 # to force run on CPU:
 # os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
+
 # If using GPU, use dynamic memory allocation
 def check_gpus():
     gpus = tf.config.list_physical_devices('GPU')
@@ -28,6 +29,7 @@ def check_gpus():
         except RuntimeError as e:
             # Memory growth must be set before GPUs have been initialized
             print(e)
+
 
 # loading the CV-data
 def prepare_cv(cv_dir):
@@ -44,6 +46,7 @@ def prepare_cv(cv_dir):
     cv_data = cv_data.drop(['time'], axis=1)
     return cv_data
 
+
 def finish_cv_data(cv_data, train_size=0.7):
     # min-max normalization
     cv_data = (cv_data - cv_data.min()) / (cv_data.max() - cv_data.min())
@@ -54,6 +57,7 @@ def finish_cv_data(cv_data, train_size=0.7):
     print(cv_train)
     print(cv_test)
     return cv_train, cv_test
+
 
 # loading the TPS-data
 def prepare_md(md_dir, ref_file, keep_atoms):
@@ -75,6 +79,7 @@ def prepare_md(md_dir, ref_file, keep_atoms):
             print(i)
     md_data = pd.concat(md_data, ignore_index=True)
     return md_data
+
 
 def finish_md_data(md_data, cv_train, cv_test):
     print(md_data.describe())
@@ -99,14 +104,16 @@ PARAM_CONSTRAINT_DEFAULTS = {
                     },
 }
 
+
 def io_config(cv_train, md_train):
     cols = cv_train.columns
     return {
-        'input_shape': [len(cols)],
+        'input_shape': list(range(len(cols)))[1:],
         'inputs': cols.tolist(),
         'output_shape': [md_train.shape[1]],
         'outputs': ['custom']
     }
+
 
 def load_param_dict(yaml_file):
     with open(yaml_file, mode='r') as f:
@@ -142,6 +149,11 @@ def run_fabulous(cv_train, cv_test, md_train, md_test,
 
     pop = optimizer.create_pop()
 
+    for network in pop:
+        network['layer_config']['activation'] = ['selu', 'linear', 'relu', 'relu']
+        network['layer_config']['layer_type'] = ['batch_norm', 'dropout', 'dense', 'dense']
+        network['layer_config']['n_nodes'] = [64, 16, 8, 64]
+
     gen_scores = []
     for i in range(n_gen):
         pop = optimizer.evolve(pop)
@@ -172,7 +184,7 @@ if __name__ == "__main__":
     yaml_file = "ad_setup.yml"
     n_gen = 50
     results_dir = "results"
-    label = "2"
+    label = "CV_tournament_09"
     keep_atoms = "backbone"
     random.seed(10)
     main(cv_dir, md_dir, ref_file, yaml_file, n_gen, results_dir, label)

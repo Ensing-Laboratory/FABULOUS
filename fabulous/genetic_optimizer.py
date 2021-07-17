@@ -201,6 +201,7 @@ class Optimizer:
         print('csv logging: {}'.format(self.cb_csv_logger), file=self.head_log)
         print('percentage penalty per input: {}'.format(self.penalty), file=self.head_log)
         print('early stopping patience: {}\n'.format(self.early_stop_patience), file=self.head_log)
+        print('penalty applied after cache', file=self.head_log)
 
         print('The networks are restricted by the following parameter constraints:', file=self.head_log)
         print_dict(self.param_constraints, print_file=self.head_log)
@@ -407,24 +408,25 @@ class Optimizer:
 
         self.head_log.flush()
 
-        # modify test_score to include penalty for number of inputs
-        total_score = test_score * (1 + self.penalty * network['io_config']['input_shape'])
-
         # return best score instead of newest
         if self.cache:
             if network_hash in self.trained_networks.keys():
                 old_score = self.trained_networks[network_hash]['score']
-                if old_score > total_score:
-                    # update stored score if better (lower)
-                    self.trained_networks[network_hash]['score'] = total_score
+                if old_score > test_score:
+                    # update cached score if better (lower)
+                    self.trained_networks[network_hash]['score'] = test_score
                     self.trained_networks[network_hash]['save_path'] = model_save_path
-                # else: #get hashed score if better
-                # total_score = old_score
+                else: #get hashed score if better
+                    test_score = old_score
+		
             else:  # if the networks was not cached before
                 self.trained_networks[network_hash] = {}
-                self.trained_networks[network_hash]['score'] = total_score
+                self.trained_networks[network_hash]['score'] = test_score
                 self.trained_networks[network_hash]['save_path'] = model_save_path
 
+        # modify test_score to include penalty for number of inputs
+        total_score = test_score * (1 + self.penalty * network['io_config']['input_shape'])
+	
         return total_score
 
     def train_and_score_pop(self, pop):

@@ -1,6 +1,7 @@
 /examples/alanine_dipeptide/data/AD/TPS/trjs
 /examples/alanine_dipeptide/data/AD/CV/CV_data
 /examples/alanine_dipeptide/results
+/examples/alanine_dipeptide/analysis_cv.ipynb
 /analysis/.*
 /.idea
 *.pyc
