@@ -309,14 +309,18 @@ class Optimizer:
             if network_hash in self.trained_networks.keys():
                 if random.uniform(0, 1) > self.train_chance:  # skip training based on train_chance
                     # grab score from cache
-                    score = self.trained_networks[network_hash]['score']
+                    test_score = self.trained_networks[network_hash]['score']
+                    total_score = test_score * (1 + self.penalty * network['io_config']['input_shape'])
                     old_save_path = self.trained_networks[network_hash]['save_path']
+
                     with open(os.path.join(model_save_path, 'cached_score.txt'), 'w') as fp:
-                        print(score, file=fp)
+                        print(f'Test_score: {test_score}', file=fp)
+                        print(f'Total_score: {total_score}', file=fp)
                         print(old_save_path, file=fp)
                         print(network, file=fp)
                         print(network_hash, file=fp)
-                    return score
+
+                    return total_score
 
         callbacks = []
         if self.cb_early_stop:
@@ -413,20 +417,20 @@ class Optimizer:
             if network_hash in self.trained_networks.keys():
                 old_score = self.trained_networks[network_hash]['score']
                 if old_score > test_score:
-                    # update cached score if better (lower)
+                    # update cached score if new score is better (lower)
                     self.trained_networks[network_hash]['score'] = test_score
                     self.trained_networks[network_hash]['save_path'] = model_save_path
-                else: #get hashed score if better
+                else:
+                    # get hashed score if better
                     test_score = old_score
-		
-            else:  # if the networks was not cached before
+            else:
+                # if the networks was not cached before
                 self.trained_networks[network_hash] = {}
                 self.trained_networks[network_hash]['score'] = test_score
                 self.trained_networks[network_hash]['save_path'] = model_save_path
 
         # modify test_score to include penalty for number of inputs
         total_score = test_score * (1 + self.penalty * network['io_config']['input_shape'])
-	
         return total_score
 
     def train_and_score_pop(self, pop):

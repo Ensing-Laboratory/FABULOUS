@@ -149,11 +149,6 @@ def run_fabulous(cv_train, cv_test, md_train, md_test,
 
     pop = optimizer.create_pop()
 
-    for network in pop:
-        network['layer_config']['activation'] = ['selu', 'linear', 'relu', 'relu']
-        network['layer_config']['layer_type'] = ['batch_norm', 'dropout', 'dense', 'dense']
-        network['layer_config']['n_nodes'] = [64, 16, 8, 64]
-
     gen_scores = []
     for i in range(n_gen):
         pop = optimizer.evolve(pop)
@@ -184,7 +179,7 @@ if __name__ == "__main__":
     yaml_file = "ad_setup.yml"
     n_gen = 50
     results_dir = "results"
-    label = "CV_tournament_09"
+    label = "1"
     keep_atoms = "backbone"
     random.seed(10)
     main(cv_dir, md_dir, ref_file, yaml_file, n_gen, results_dir, label)
