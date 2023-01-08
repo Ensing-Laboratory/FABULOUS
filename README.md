@@ -4,6 +4,10 @@ Ferry, Alberto, and Bernd's Ultimate Learning Of Useful Slow-coordinates
 This package provides a tool to find collective variables from a pool of candidates given trajectories containing the transition of interest. 
 
 
+![Fabulous](https://github.com/Ensing-Laboratory/FABULOUS/fabulous.jpeg)
+
+
+
 ### Example
 To run the example as is, unpack the following archives before running main.py:
 ```bash
